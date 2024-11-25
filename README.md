@@ -4,3 +4,4 @@ Project detail: https://www.theodinproject.com/lessons/node-path-javascript-weat
 Live preview: https://thisisshiki.github.io/odin-weather-app/
 
 Description: Weather App, TypeScript, React, Vite.
+

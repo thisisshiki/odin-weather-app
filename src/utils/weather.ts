@@ -1,5 +1,5 @@
-const API_KEY = '7CFQZF59SF3NFLZPRHJ8EYLX4';
-const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const sanitizeLocation = (location: string): string => {
   // Remove special characters and extra spaces, but keep basic punctuation

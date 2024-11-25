@@ -9,13 +9,14 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
+    base: env.VITE_APP_BASE,
     plugins: [
       react(),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
         manifest: {
-          name: 'Weather Forecast',
+          name: env.VITE_APP_NAME,
           short_name: 'Weather',
           theme_color: '#ffffff',
           background_color: '#ffffff',

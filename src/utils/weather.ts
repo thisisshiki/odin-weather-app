@@ -1,19 +1,70 @@
-const API_KEY = '7CFQZF59SF3NFLZPRHJ8EYLX4'; // Replace with your Visual Crossing API key
+const API_KEY = '7CFQZF59SF3NFLZPRHJ8EYLX4';
 const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+
+const sanitizeLocation = (location: string): string => {
+  // Remove special characters and extra spaces, but keep basic punctuation
+  return location
+    .trim()
+    .replace(/[^\w\s,.-]/g, '')
+    .replace(/\s+/g, ' ');
+};
 
 export const fetchWeatherData = async (location: string) => {
   try {
+    const sanitizedLocation = sanitizeLocation(location);
+    
+    if (!sanitizedLocation) {
+      throw new Error('Please enter a valid location.');
+    }
+
     const response = await fetch(
-      `${BASE_URL}/${encodeURIComponent(location)}?unitGroup=metric&key=${API_KEY}&contentType=json`
+      `${BASE_URL}/${encodeURIComponent(sanitizedLocation)}?unitGroup=metric&include=current,days&key=${API_KEY}`
     );
     
     if (!response.ok) {
-      throw new Error('Weather data not found');
+      if (response.status === 400) {
+        throw new Error('Location not found. Please enter a valid city name or address.');
+      }
+      if (response.status === 429) {
+        throw new Error('Too many requests. Please try again in a moment.');
+      }
+      throw new Error('Weather service is temporarily unavailable. Please try again later.');
     }
     
-    return await response.json();
+    const data = await response.json();
+    
+    if (!data.currentConditions || !data.days || data.days.length === 0) {
+      throw new Error('No weather data available for this location.');
+    }
+    
+    return {
+      currentConditions: {
+        temp: data.currentConditions.temp,
+        feelslike: data.currentConditions.feelslike,
+        humidity: data.currentConditions.humidity,
+        windspeed: data.currentConditions.windspeed,
+        conditions: data.currentConditions.conditions,
+        icon: data.currentConditions.icon
+      },
+      location: {
+        address: data.resolvedAddress || sanitizedLocation,
+        timezone: data.timezone,
+        latitude: data.latitude,
+        longitude: data.longitude
+      },
+      days: data.days.map((day: any) => ({
+        datetime: day.datetime,
+        tempmax: day.tempmax,
+        tempmin: day.tempmin,
+        conditions: day.conditions,
+        icon: day.icon
+      }))
+    };
   } catch (error) {
-    throw new Error('Failed to fetch weather data');
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('An unexpected error occurred. Please try again.');
   }
 };
 

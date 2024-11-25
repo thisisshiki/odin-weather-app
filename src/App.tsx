@@ -14,17 +14,28 @@ function App() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!location.trim()) return;
+    
+    const trimmedLocation = location.trim();
+    if (!trimmedLocation) {
+      setError('Please enter a location to search.');
+      return;
+    }
+
+    if (trimmedLocation.length < 2) {
+      setError('Please enter a more specific location.');
+      return;
+    }
 
     setLoading(true);
     setError('');
+    setWeatherData(null);
 
     try {
-      const data = await fetchWeatherData(location);
+      const data = await fetchWeatherData(trimmedLocation);
       setWeatherData(data);
+      setError('');
     } catch (err) {
-      setError('Failed to fetch weather data. Please try again.');
-      setWeatherData(null);
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
@@ -47,9 +58,14 @@ function App() {
                 <input
                   type="text"
                   value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Enter location..."
+                  onChange={(e) => {
+                    setLocation(e.target.value);
+                    if (error) setError('');
+                  }}
+                  placeholder="Enter city name (e.g., London, Paris, Tokyo)"
                   className="w-full px-4 py-2 rounded-lg bg-white/90 backdrop-blur-md shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  minLength={2}
+                  maxLength={100}
                 />
                 <Search className="absolute right-3 top-2.5 text-gray-400" />
               </div>
@@ -71,17 +87,19 @@ function App() {
             </form>
 
             {loading && (
-              <div className="text-center text-white">Loading...</div>
+              <div className="text-center text-white text-lg">
+                Searching for weather data...
+              </div>
             )}
 
             {error && (
-              <div className="bg-red-500/90 text-white p-4 rounded-lg mb-8">
+              <div className="bg-red-500/90 backdrop-blur-md text-white p-4 rounded-lg mb-8 text-center">
                 {error}
               </div>
             )}
 
             {weatherData && (
-              <div className="space-y-8">
+              <div className="space-y-8 animate-fade-in">
                 <div className="text-center text-white mb-8">
                   <h1 className="text-3xl font-bold mb-2">
                     {weatherData.location.address}

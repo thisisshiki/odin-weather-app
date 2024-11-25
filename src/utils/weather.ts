@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_API_KEY'; // Replace with your Visual Crossing API key
+const API_KEY = '7CFQZF59SF3NFLZPRHJ8EYLX4'; // Replace with your Visual Crossing API key
 const BASE_URL = 'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
 export const fetchWeatherData = async (location: string) => {

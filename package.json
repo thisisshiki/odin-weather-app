@@ -1,0 +1,32 @@
+{
+  "name": "weather-forecast",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "homepage": "https://<your-username>.github.io/<your-repo-name>",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^22.9.3",
+    "@vitejs/plugin-react-swc": "^3.7.1",
+    "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.5",
+    "lucide-react": "^0.344.0",
+    "postcss": "^8.4.49",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.15",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-pwa": "^0.21.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0"
+  }
+}
